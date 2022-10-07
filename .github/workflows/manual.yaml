@@ -16,6 +16,7 @@ on:
         # Input has to be provided for the workflow to run
         required: true
       environment:
+        type: choice
         description: 'Environment'
         required: true
         options:
