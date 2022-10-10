@@ -38,9 +38,11 @@ jobs:
     - name: Send greeting
       run: echo "Hello ${{ github.event.inputs.name }}"
     - name: Check environment
+      env:
+        SOME_SECRET: ${{ secrets.SOME_SECRET }}
       run: |
         echo "This is env: ${{ inputs.environment }}"
-        echo "${{ secrets.SOME_SECRET }}" | sed -e 's/\(.\)/\1 /g'
-        if [[ "${{ secrets.SOME_SECRET }}" == "dev-value" ]]; then
+        echo "$SOME_SECRET" | sed -e 's/\(.\)/\1 /g'
+        if [[ "${SOME_SECRET}" == "dev-value" ]]; then
           echo "is dev"
         fi
