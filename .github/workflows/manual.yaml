@@ -15,10 +15,13 @@ on:
         default: 'World'
         # Input has to be provided for the workflow to run
         required: true
-        #environment:
-        #  description: 'Environment'
-        #  type: environment
-        #  required: true
+      environment:
+        description: 'Environment'
+        type: environment
+        required: true
+    # Will this work?
+    # https://github.blog/changelog/2022-05-03-github-actions-simplify-using-secrets-with-reusable-workflows/
+    secrets: inherit
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -27,7 +30,6 @@ jobs:
   greet:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    environment: development
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
