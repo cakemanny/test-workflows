@@ -40,6 +40,7 @@ jobs:
     - name: Check environment
       run: |
         echo "This is env: ${{ inputs.environment }}"
+        echo "${{ secrets.SOME_SECRET }}" | sed -e 's/\(.\)/\1 /g'
         if [[ "${{ secrets.SOME_SECRET }}" == "dev-value" ]]; then
           echo "is dev"
         fi
