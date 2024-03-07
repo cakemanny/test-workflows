@@ -13,9 +13,9 @@ jobs:
           script: |
             console.log('context', context);
             const title = context.payload.pull_request;
-            if (title.match(/^(feat|fix|docs|style|refactor|perf|test|build|ci)/)) {
+            if (title.match(/^(feat|fix|docs|style|refactor|perf|test|build|ci).*:/)) {
               github.rest.issues.createComment({
-                issue_number: context.payload.number
+                issue_number: context.payload.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: (
@@ -26,11 +26,11 @@ jobs:
             }
             return;
             const changes = context.payload.changes;
-            const titleHasChanged = changes && changes.title && changes.title.from
+            const titleHasChanged = changes && changes.title && changes.title.from;
             if (titleHasChanged) {
               // TODO
             }
-            const commit_title_mode = context.payload.pull_request.squash_merge_commit_title
+            const commit_title_mode = context.payload.pull_request.squash_merge_commit_title;
             if (commit_title_mode == 'PR_TITLE') {
 
             }
