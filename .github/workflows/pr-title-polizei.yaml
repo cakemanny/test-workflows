@@ -13,7 +13,7 @@ jobs:
         with:
           script: |
             console.log('context', context);
-            const title = context.payload.pull_request;
+            const title = context.payload.pull_request.title;
             if (title.match(/^(feat|fix|docs|style|refactor|perf|test|build|ci).*:/)) {
               await github.rest.issues.createComment({
                 issue_number: context.payload.number,
