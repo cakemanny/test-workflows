@@ -1,0 +1,39 @@
+
+name: PR title Polizei
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  check-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            // For debugging the bugs 🐛
+            console.log('context', context);
+
+            let wantToComment = false;
+            const changes = context.payload.changes;
+            const titleHasChanged = changes && changes.title && changes.title.from;
+            if (titleHasChanged || payload.action === 'edited') {
+              const title = context.payload.pull_request.title;
+              if (!title.match(/^(feat|fix|docs|style|refactor|perf|test|build|ci).*:/)) {
+                wantToComment = true;
+              }
+            }
+            if (!wantToComment) {
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              issue_number: context.payload.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: (
+                '👮 Jo, seien Sie bitte vorsichtig, Sie haben bis jetzt ' +
+                'kein convention in deinem Commit  🚔'
+              ),
+            });
