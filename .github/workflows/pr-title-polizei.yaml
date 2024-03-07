@@ -12,18 +12,16 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
+            // For debugging the bugs 🐛
             console.log('context', context);
 
             let wantToComment = false;
             const changes = context.payload.changes;
             const titleHasChanged = changes && changes.title && changes.title.from;
             if (titleHasChanged || payload.action === 'edited') {
-              const commit_title_mode = context.payload.pull_request.squash_merge_commit_title;
-              if (commit_title_mode === 'PR_TITLE') {
-                const title = context.payload.pull_request.title;
-                if (!title.match(/^(feat|fix|docs|style|refactor|perf|test|build|ci).*:/)) {
-                  wantToComment = true;
-                }
+              const title = context.payload.pull_request.title;
+              if (!title.match(/^(feat|fix|docs|style|refactor|perf|test|build|ci).*:/)) {
+                wantToComment = true;
               }
             }
             if (!wantToComment) {
