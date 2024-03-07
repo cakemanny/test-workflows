@@ -4,6 +4,7 @@ name: PR title Polizei
 on:
   pull_request:
     types: [opened, edited]
+
 jobs:
   check-pr-title:
     runs-on: ubuntu-latest
@@ -14,15 +15,15 @@ jobs:
             console.log('context', context);
             const title = context.payload.pull_request;
             if (title.match(/^(feat|fix|docs|style|refactor|perf|test|build|ci).*:/)) {
-              github.rest.issues.createComment({
+              await github.rest.issues.createComment({
                 issue_number: context.payload.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: (
-                  '👮 Jo, seien Sie bitte vorsichtig, Sie haben bis jetzt '
+                  '👮 Jo, seien Sie bitte vorsichtig, Sie haben bis jetzt ' +
                   'kein convention in deinem Commit  🚔'
                   ),
-              })
+              });
             }
             return;
             const changes = context.payload.changes;
