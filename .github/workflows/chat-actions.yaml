@@ -2,10 +2,10 @@ on:
   issue_comment:
     types: [created, edited, deleted]
 
-#permissions:
-#  contents: write
-#  issues: write  # to react to comment (doesn't work)
-#  pull-requests: read  # to find out head branch
+permissions:
+  contents: write
+  issues: write  # to react to comment (doesn't work)
+  pull-requests: write  # to find out head branch or does it need to be write, for reactions?
 
 jobs:
   fake-it:
@@ -14,13 +14,15 @@ jobs:
     env:
       # for using gh cli
       GH_TOKEN: ${{ github.token }}
+      ACCEPT_HEADER: 'Accept: application/vnd.github+json'
+      API_VERSION_HEADER: "X-GitHub-Api-Version: 2022-11-28"
     steps:
       - name: React with 👀
         run: |
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
+          # thinking about shortening urls
+          echo "${{ github.event.comment.url }}/reactions"
+          gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
+            -X POST \
             /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
              -f "content=eyes"
       - name: Work out head branch
@@ -28,40 +30,36 @@ jobs:
         run: |
           echo "${{ github.event.issue.pull_request.url }}"
           HEAD_REF=$(
-            gh api -X GET \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
+            gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
+              -X GET \
               /repos/${{ github.repository }}/pulls/${{ github.event.issue.id }} \
               --jq '.head.ref'
           )
           echo "HEAD_REF=$HEAD_REF" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4
+      - name: Checkout PR head branch
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ steps.find-branch.outputs.HEAD_REF }}
-      - run: |
+      - name: Check Branch
+        run: |
           git branch -v
-      - run: |
-          # React with +1
-          gh api \
+      - name: React with 👍 (+1)
+        run: |
+          gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
             --method POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
              -f "content=+1"
-      - if: ${{ always() }}
+      - name: Clean up old 👀
+        if: ${{ always() }}
         run: |
-          gh api \
+          gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
             -X GET \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
             -f content=eyes \
             --jq '.[] | select(.user.login == "github-actions[bot]") | .id' \
           | head -1 | while read REACTION_ID; do
-            gh api \
+            gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
               -X DELETE \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
               /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions/"${REACTION_ID}"
           done
