@@ -20,6 +20,9 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
              -f "content=eyes"
+      - run: |
+          echo "${{ github.base_ref }}"
+          echo "${{ github.head_ref }}"
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
