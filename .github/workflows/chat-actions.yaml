@@ -2,9 +2,9 @@ on:
   issue_comment:
     types: [created, edited, deleted]
 
-permissions:
-  contents: write
-  issues: write
+#permissions:
+#  contents: write
+#  issues: write
 
 jobs:
   fake-it:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh api \
             --method POST \
@@ -27,7 +27,7 @@ jobs:
       - run: |
           git branch -v
       - env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh api \
             --method POST \
