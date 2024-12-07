@@ -19,23 +19,20 @@ jobs:
     steps:
       - name: React with 👀
         run: |
-          # thinking about shortening urls
-          echo "${{ github.event.comment.url }}/reactions"
           gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
-            -X POST \
-            /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
-             -f "content=eyes"
+            -X POST "${{ github.event.comment.url }}/reactions" \
+            -f "content=eyes"
+
       - name: Work out head branch
         id: find-branch
         run: |
-          echo "${{ github.event.issue.pull_request.url }}"
           HEAD_REF=$(
             gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
-              -X GET \
-              /repos/${{ github.repository }}/pulls/${{ github.event.issue.id }} \
+              -X GET "${{ github.event.issue.pull_request.url }}" \
               --jq '.head.ref'
           )
           echo "HEAD_REF=$HEAD_REF" >> "$GITHUB_OUTPUT"
+
       - name: Checkout PR head branch
         uses: actions/checkout@v4
         with:
@@ -44,22 +41,22 @@ jobs:
       - name: Check Branch
         run: |
           git branch -v
+
       - name: React with 👍 (+1)
         run: |
           gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
-            --method POST \
-            /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
-             -f "content=+1"
+            -X POST "${{ github.event.comment.url }}/reactions" \
+            -f "content=+1"
+
       - name: Clean up old 👀
         if: ${{ always() }}
         run: |
           gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
-            -X GET \
-            /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
+            -X GET "${{ github.event.comment.url }}/reactions" \
             -f content=eyes \
             --jq '.[] | select(.user.login == "github-actions[bot]") | .id' \
           | head -1 | while read REACTION_ID; do
             gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
               -X DELETE \
-              /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions/"${REACTION_ID}"
+              "${{ github.event.comment.url }}/reactions/${REACTION_ID}"
           done
