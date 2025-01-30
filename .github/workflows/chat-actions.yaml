@@ -42,6 +42,16 @@ jobs:
         run: |
           git branch -v
 
+      - name: Update some file
+        run: |
+          date > pointless.file
+
+      - name: Commit changes
+        run: |
+          git add pointless.file
+          git commit -m 'chore: pointless commit'
+          git push
+
       - name: React with 👍 (+1)
         run: |
           gh api -H "$ACCEPT_HEADER" -H "$API_VERSION_HEADER" \
