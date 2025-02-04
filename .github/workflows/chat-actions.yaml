@@ -47,6 +47,8 @@ jobs:
           date > pointless.file
 
       - name: Commit changes
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           # Inspired by https://github.com/commitizen-tools/commitizen-action/blob/master/entrypoint.sh
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -54,7 +56,7 @@ jobs:
           git config --local pull.rebase true
           git add pointless.file
           git commit -m 'chore: pointless commit'
-          REMOTE_REPO="https://${GITHUB_ACTOR}:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          REMOTE_REPO="https://${GITHUB_ACTOR}:${PERSONAL_ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           CURRENT_BRANCH=$(git branch --show-current)
           git pull "$REMOTE_REPO" "$CURRENT_BRANCH"
           git push "$REMOTE_REPO" "HEAD:${CURRENT_BRANCH}"
