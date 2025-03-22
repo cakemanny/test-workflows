@@ -1,3 +1,4 @@
+# vim:syntax=yaml:
 name: Some PR check
 
 on:
@@ -15,3 +16,15 @@ jobs:
           echo echo echo echo echo εχο
       - name: ${{ github.event_path  }}
         run: cat ${{ github.event_path }}
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            rust-pipelines -> target
+      - run: |
+          cargo install --path ./rust-pipelines --bin=rust-pipelines
+      - run: rust-pipelines hello
+      - run: rust-pipelines ci --event-name=${{ github.event_name }} --event-path=${{ github.event_path }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
