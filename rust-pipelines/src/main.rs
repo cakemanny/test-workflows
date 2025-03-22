@@ -104,6 +104,7 @@ async fn ci_pipeline(
                 eyre::bail!("pull_request event without repository");
             };
 
+            info!("plus one-ing the PR!");
             octocrab::instance()
                 .user_access_token(github_token)?
                 .issues_by_id(repo.id)
