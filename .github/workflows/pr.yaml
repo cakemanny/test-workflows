@@ -6,9 +6,12 @@ on:
 
 
 jobs:
+
   pr-check:
     runs-on: ubuntu-latest
     steps:
       - name: Echo Something
         run: |
           echo echo echo echo echo εχο
+      - name: ${{ github.event_path  }}
+        run: cat ${{ github.event_path }}
