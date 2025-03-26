@@ -4,14 +4,22 @@ on:
   pull_request:
     branches: [main]
 
-
 jobs:
-
   pr-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Echo Something
+      - uses: actions/checkout@v4
+
+      - name: Start Vault
         run: |
-          echo echo echo echo echo εχο
-      - name: ${{ github.event_path  }}
-        run: cat ${{ github.event_path }}
+          docker compose up --wait
+
+      - name: Run pipeline
+        env:
+          VAULT_TOKEN: justademo  # This would come from a github secret
+          VAULT_ADDR: 'http://0.0.0.0:8200'
+        # see docker-compose.yaml to understand where the secret comes from
+        uses: dagger/dagger-for-github@8.0.0
+        with:
+          call: deploy --deploy-key=vault://foo.bar
+          version: "0.17.0"

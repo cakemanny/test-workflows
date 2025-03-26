@@ -1,0 +1,8 @@
+{
+  "name": "test-workflows",
+  "engineVersion": "v0.17.0",
+  "sdk": {
+    "source": "go"
+  },
+  "source": ".dagger"
+}
