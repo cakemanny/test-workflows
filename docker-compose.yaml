@@ -1,0 +1,27 @@
+services:
+  vault:
+    image: "docker.io/hashicorp/vault"
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: justademo
+      VAULT_ADDR: "http://127.0.0.1:8200" # for the health checks
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      test: ["CMD", "vault", "status"]
+    restart: unless-stopped
+
+  vault_prefill:
+    image: "docker.io/hashicorp/vault"
+    environment:
+      VAULT_ADDR: "http://vault:8200"
+      VAULT_TOKEN: justademo
+    command: ["vault", "kv", "put", "-mount=secret", "foo", "bar=baz"]
+    depends_on:
+      vault:
+        condition: service_healthy
+    restart: no
