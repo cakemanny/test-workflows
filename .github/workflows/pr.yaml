@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  DAGGER_NO_NAG: '1'
+  DO_NOT_TRACK: '1'
+
 jobs:
   pr-check:
     runs-on: ubuntu-latest
