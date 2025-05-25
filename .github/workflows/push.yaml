@@ -8,19 +8,13 @@ jobs:
       - uses: actions/checkout@v4
       # https://github.com/actions/runner-images/issues/10977#issuecomment-2810713336
       - run: |
-          sudo tee /etc/dpkg/dpkg.cfg.d/01_nodoc > /dev/null << 'EOF'
-          path-exclude /usr/share/doc/*
-          path-exclude /usr/share/man/*
-          path-exclude /usr/share/info/*
-          EOF
-      - run: |
           echo "set man-db/auto-update false" | sudo debconf-communicate
           sudo dpkg-reconfigure man-db
       - run: sudo apt-get update
       - run: sudo apt-get install -y qemu-system-x86 qemu-utils qemu-kvm
       - run: gpg --import --keyid-format LONG keys/Flatcar_Image_Signing_Key.asc
       - run: set -x; ./scripts/acquire.sh
-      - run: ./flatcar_production_qemu_uefi.sh -nographic
+      - run: sudo ./flatcar_production_qemu_uefi.sh -nographic
         timeout-minutes: 1
       - run: set -x; ./scripts/wait_for_ssh.sh
         timeout-minutes: 1
