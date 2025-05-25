@@ -21,12 +21,12 @@ jobs:
       - run: ./scripts/ssh.sh hostname
       - run: |
           ./scripts/ssh.sh bash <<'EOF'
-            docker run -it --rm python:3.12-slim python -c 'print("hello flatcar")'
+            docker run --rm python:3.12-slim python -c 'print("hello flatcar")'
           EOF
       - run: |
           ./scripts/ssh.sh bash <<'EOF'
             set -euo pipefail
-            docker run -it --rm python:3.12-slim bash <<'EOT'
+            docker run -i --rm python:3.12-slim bash <<'EOT'
               set -euxo pipefail
               pip install pystack
               python3 -c 'import time; time.sleep(10)' &
