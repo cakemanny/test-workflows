@@ -6,6 +6,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # https://github.com/actions/runner-images/issues/10977#issuecomment-2810713336
+      - run: |
+          sudo tee /etc/dpkg/dpkg.cfg.d/01_nodoc > /dev/null << 'EOF'
+          path-exclude /usr/share/doc/*
+          path-exclude /usr/share/man/*
+          path-exclude /usr/share/info/*
+          EOF
       - run: sudo apt-get update
       - run: sudo apt-get install qemu-system-x86 qemu-utils
       - run: gpg --import --keyid-format LONG keys/Flatcar_Image_Signing_Key.asc

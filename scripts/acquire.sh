@@ -15,9 +15,9 @@ case "$(uname -m)" in
         ;;
 esac
 
-for suff in .sh _image.img _efi_code.fd _efi_vars.fd; do
-  wget https://${channel}.release.flatcar-linux.net/${arch}-usr/$version/${base_name}${suff}
-  wget https://${channel}.release.flatcar-linux.net/${arch}-usr/$version/${base_name}${suff}.sig
+for suff in .sh _image.img _efi_code.qcow2 _efi_vars.qcow2; do
+  wget --no-verbose https://${channel}.release.flatcar-linux.net/${arch}-usr/$version/${base_name}${suff}
+  wget --no-verbose https://${channel}.release.flatcar-linux.net/${arch}-usr/$version/${base_name}${suff}.sig
   gpg --verify ${base_name}${suff}.sig
 done
 
