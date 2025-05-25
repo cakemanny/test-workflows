@@ -14,8 +14,8 @@ jobs:
           path-exclude /usr/share/info/*
           EOF
       - run: |
-          echo "set man-db/auto-update false" | debconf-communicate
-          dpkg-reconfigure man-db
+          echo "set man-db/auto-update false" | sudo debconf-communicate
+          sudo dpkg-reconfigure man-db
       - run: sudo apt-get update
       - run: sudo apt-get install -y qemu-system-x86 qemu-utils qemu-kvm
       - run: gpg --import --keyid-format LONG keys/Flatcar_Image_Signing_Key.asc
