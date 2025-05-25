@@ -6,6 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: sudo apt-get update
       - run: sudo apt-get install qemu-system-x86 qemu-utils
       - run: gpg --import --keyid-format LONG keys/Flatcar_Image_Signing_Key.asc
       - run: set -x; ./scripts/acquire.sh
