@@ -14,8 +14,7 @@ jobs:
       - run: sudo apt-get install -y qemu-system-x86 qemu-utils qemu-kvm
       - run: gpg --import --keyid-format LONG keys/Flatcar_Image_Signing_Key.asc
       - run: set -x; ./scripts/acquire.sh
-      - run: sudo ./flatcar_production_qemu_uefi.sh -nographic
-        timeout-minutes: 1
+      - run: sudo ./flatcar_production_qemu_uefi.sh -nographic &
       - run: set -x; ./scripts/wait_for_ssh.sh
         timeout-minutes: 1
       - run: ./scripts/ssh.sh hostname
