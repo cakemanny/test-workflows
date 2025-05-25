@@ -1,0 +1,29 @@
+on:
+  push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get install qemu-system-x86 qemu-utils
+      - run: gpg --import --keyid-format LONG keys/Flatcar_Image_Signing_Key.asc
+      - run: set -x; ./scripts/acquire.sh
+      - run: ./flatcar_production_qemu.sh -nographic &
+      - timeout-minutes: 1
+        run: set -x; ./scripts/wait_for_ssh.sh
+      - run: ./scripts/ssh.sh hostname
+      - run: |
+          ./scripts/ssh.sh bash <<'EOF'
+            docker run -it --rm python:3.12-slim python -c 'print("hello flatcar")'
+          EOF
+      - run: |
+          ./scripts/ssh.sh bash <<'EOF'
+            set -euo pipefail
+            docker run -it --rm python:3.12-slim bash <<'EOT'
+              set -euxo pipefail
+              pip install pystack
+              python3 -c 'import time; time.sleep(10)' &
+              pystack remote $!
+            EOT
+          EOF

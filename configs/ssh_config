@@ -1,0 +1,6 @@
+Host flatcar
+HostName localhost
+Port 2222
+User core
+StrictHostKeyChecking no
+UserKnownHostsFile /dev/null
