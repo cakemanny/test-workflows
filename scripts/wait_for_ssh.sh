@@ -2,6 +2,6 @@
 
 set -eu
 
-while ! ssh -F ./configs/ssh_config flatcar hostname; do
+while ! ./scripts/ssh.sh hostname; do
     sleep 1
 done
