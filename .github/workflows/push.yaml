@@ -5,6 +5,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - run: find ~/.ssh  # XXX
       - uses: actions/checkout@v4
       # https://github.com/actions/runner-images/issues/10977#issuecomment-2810713336
       - run: |
@@ -13,9 +14,10 @@ jobs:
       - run: sudo apt-get update
       - run: sudo apt-get install -y qemu-system-x86 qemu-utils qemu-kvm
       - run: gpg --import --keyid-format LONG keys/Flatcar_Image_Signing_Key.asc
-      - run: set -x; ./scripts/acquire.sh
-      - run: sudo ./flatcar_production_qemu_uefi.sh -nographic &
-      - run: set -x; ./scripts/wait_for_ssh.sh
+      - run: ./scripts/acquire.sh
+      - run: ssh-keygen -C noreply@github.com -f "keys/id_ed25519" -N "" -t ed25519
+      - run: sudo ./flatcar_production_qemu_uefi.sh -a keys/id_ed25519.pub -nographic &
+      - run: ./scripts/wait_for_ssh.sh
         timeout-minutes: 1
       - run: ./scripts/ssh.sh hostname
       - run: |
