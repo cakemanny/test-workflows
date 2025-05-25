@@ -13,8 +13,11 @@ jobs:
           path-exclude /usr/share/man/*
           path-exclude /usr/share/info/*
           EOF
+      - run: |
+          echo "set man-db/auto-update false" | debconf-communicate
+          dpkg-reconfigure man-db
       - run: sudo apt-get update
-      - run: sudo apt-get install qemu-system-x86 qemu-utils
+      - run: sudo apt-get install -y qemu-system-x86 qemu-utils qemu-kvm
       - run: gpg --import --keyid-format LONG keys/Flatcar_Image_Signing_Key.asc
       - run: set -x; ./scripts/acquire.sh
       - run: ./flatcar_production_qemu_uefi.sh -nographic
