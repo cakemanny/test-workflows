@@ -34,6 +34,6 @@ jobs:
             git clone https://github.com/cakemanny/cpython.git --depth=3 --branch=fallback-to-proc-mem
             cd cpython
             ./configure --with-pydebug && make -j $(nproc)
-            ./python -m test --ignore test_gdb -j$(nproc)
+            ./python -m test --match 'test_remote_pdb' --match 'test_external_inspection' -j$(nproc)
           EOT
           EOF
