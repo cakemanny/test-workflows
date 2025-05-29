@@ -1,5 +1,6 @@
 on:
-  push
+  push: {}
+  workflow_dispatch: {}
 
 jobs:
   test:
@@ -24,14 +25,14 @@ jobs:
             docker run --rm python:3.12-slim python -c 'print("hello flatcar")'
           EOF
       - run: |
-          ./scripts/ssh.sh bash <<'EOF'
-            set -euo pipefail
-            docker run -i --rm python:3.12 bash <<'EOT'
-              set -euxo pipefail
-              mkdir src && cd src
-              git clone https://github.com/cakemanny/cpython.git --depth=3 --branch=fallback-to-proc-mem
-              cd cpython
-              ./configure --with-pydebug && make -j $(nproc)
-              ./python -m test --match 'test_remote_pdb' --match 'test_external_inspection' -j4
-            EOT
+          ./scripts/ssh.sh bash << 'EOF'
+          set -euo pipefail
+          docker run -i --rm python:3.12 bash << 'EOT'
+            set -euxo pipefail
+            mkdir src && cd src
+            git clone https://github.com/cakemanny/cpython.git --depth=3 --branch=fallback-to-proc-mem
+            cd cpython
+            ./configure --with-pydebug && make -j $(nproc)
+            ./python -m test -j$(nproc)
+          EOT
           EOF
