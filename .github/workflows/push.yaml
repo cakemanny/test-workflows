@@ -26,10 +26,12 @@ jobs:
       - run: |
           ./scripts/ssh.sh bash <<'EOF'
             set -euo pipefail
-            docker run -i --rm python:3.12-slim bash <<'EOT'
+            docker run -i --rm python:3.12 bash <<'EOT'
               set -euxo pipefail
-              pip install pystack
-              python3 -c 'import time; time.sleep(10)' &
-              pystack remote $!
+              mkdir src && cd src
+              git clone https://github.com/cakemanny/cpython.git --depth=3 --branch=fallback-to-proc-mem
+              cd cpython
+              ./configure --with-pydebug && make -j $(nproc)
+              ./python -m test --match 'test_remote_pdb' --match 'test_external_inspection' -j4
             EOT
           EOF
