@@ -35,5 +35,6 @@ jobs:
             cd cpython
             ./configure --with-pydebug && make -j $(nproc)
             ./python -m test --match 'test_remote_pdb' --match 'test_external_inspection' -j$(nproc)
+            ./python Tools/inspection/benchmark_external_inspection.py
           EOT
           EOF
