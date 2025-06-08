@@ -27,11 +27,11 @@ jobs:
       - run: |
           ./scripts/ssh.sh bash << 'EOF'
           set -euo pipefail
-          docker run -i --rm python:3.12 bash << 'EOT'
+          docker run -i --rm python:3.13 bash << 'EOT'
             set -euxo pipefail
             apt-get update && apt-get install -y gdb
             mkdir src && cd src
-            git clone https://github.com/cakemanny/cpython.git --depth=3 --branch=fallback-to-proc-mem
+            git clone https://github.com/python/cpython.git --depth=3 --branch=main
             cd cpython
             ./configure --with-pydebug && make -j $(nproc)
             ./python -m test --match 'test_remote_pdb' --match 'test_external_inspection' -j$(nproc)
