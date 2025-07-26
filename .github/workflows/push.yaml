@@ -29,12 +29,12 @@ jobs:
           set -euo pipefail
           docker run -i --rm python:3.13 bash << 'EOT'
             set -euxo pipefail
-            apt-get update && apt-get install -y gdb
-            mkdir src && cd src
-            git clone https://github.com/python/cpython.git --depth=3 --branch=main
-            cd cpython
-            ./configure --with-pydebug && make -j $(nproc)
-            ./python -m test --match 'test_remote_pdb' --match 'test_external_inspection' -j$(nproc)
-            ./python Tools/inspection/benchmark_external_inspection.py
+            apt-get update && apt-get install -y libdw-dev libelf-dev pkg-config
+            python -m pip install "pystack @ git+https://github.com/cakemanny/pystack.git@support-missing-process_vm_readv"
+            python3 -c $'import time\nwhile True: time.sleep(1)' &
+            target=$!
+            sleep 0.3
+            pystack remote $target
+            pystack remote $target -vv 2>&1| grep falling
           EOT
           EOF
