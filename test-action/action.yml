@@ -6,5 +6,3 @@ runs:
   steps:
     - run: echo "runner.os=${{ runner.os }}"
       shell: sh
-    - run: echo "vars=${{ toJSON(vars) }}"
-      shell: sh
