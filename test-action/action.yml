@@ -2,7 +2,8 @@ name: Test Action
 description: A test action
 
 inputs:
-
+  a:
+    description: A
 
 runs:
   using: composite
@@ -18,4 +19,6 @@ runs:
     - run: echo "strategy=${{ toJSON(strategy) }}"
       shell: sh
     - run: echo "matrix=${{ toJSON(matrix) }}"
+      shell: sh
+    - run: echo "inputs=${{ toJSON(inputs) }}"
       shell: sh
