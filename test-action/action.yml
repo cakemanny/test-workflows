@@ -6,3 +6,13 @@ runs:
   steps:
     - run: echo "runner.os=${{ runner.os }}"
       shell: sh
+    - run: echo "job=${{ toJSON(job) }}"
+      shell: sh
+    - run: echo "runner=${{ toJSON(runner) }}"
+      shell: sh
+    - run: echo "env=${{ toJSON(env) }}"
+      shell: sh
+    - run: echo "secrets=${{ toJSON(secrets) }}"
+      shell: sh
+    - run: echo "strategy=${{ toJSON(strategy) }}"
+      shell: sh
