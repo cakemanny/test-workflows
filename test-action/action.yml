@@ -1,6 +1,9 @@
 name: Test Action
 description: A test action
 
+inputs:
+
+
 runs:
   using: composite
   steps:
@@ -13,8 +16,6 @@ runs:
     - run: echo "env=${{ toJSON(env) }}"
       shell: sh
     - run: echo "strategy=${{ toJSON(strategy) }}"
-      shell: sh
-    - run: echo "needs=${{ toJSON(needs) }}"
       shell: sh
     - run: echo "matrix=${{ toJSON(matrix) }}"
       shell: sh
