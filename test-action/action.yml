@@ -1,5 +1,5 @@
 name: Test Action
-description: A test action ${{ inputs.a }}
+description: A test action ${{ format('Hello {0} {1} {2}', 'Mona', 'the', 'Octocat') }}
 
 inputs:
   a:
