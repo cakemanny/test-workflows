@@ -1,0 +1,10 @@
+name: Test Action
+description: A test action
+
+runs:
+  using: composite
+  steps:
+    - run: echo "runner.os=${{ runner.os }}"
+      shell: sh
+    - run: echo "vars=${{ toJSON(vars) }}"
+      shell: sh
